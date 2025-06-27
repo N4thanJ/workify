@@ -11,10 +11,10 @@ class LoginPage extends StatefulWidget {
   final String title;
 
   @override
-  State<LoginPage> createState() => _MyWidgetState();
+  State<LoginPage> createState() => _LoginWidgetState();
 }
 
-class _MyWidgetState extends State<LoginPage> {
+class _LoginWidgetState extends State<LoginPage> {
   final _secureStorage = FlutterSecureStorage();
   final formKey = GlobalKey<FormState>();
 
@@ -45,6 +45,11 @@ class _MyWidgetState extends State<LoginPage> {
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(const SnackBar(content: Text('Login successful!')));
+
+          await Future.delayed(const Duration(milliseconds: 500));
+
+          if (!mounted) return;
+          Navigator.of(context).pushNamed('/home');
         } else {
           if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(

@@ -11,10 +11,10 @@ class RegisterPage extends StatefulWidget {
   final String title;
 
   @override
-  State<RegisterPage> createState() => _MyWidgetState();
+  State<RegisterPage> createState() => _RegisterWidgetState();
 }
 
-class _MyWidgetState extends State<RegisterPage> {
+class _RegisterWidgetState extends State<RegisterPage> {
   final _secureStorage = FlutterSecureStorage();
   final formKey = GlobalKey<FormState>();
 
@@ -48,6 +48,11 @@ class _MyWidgetState extends State<RegisterPage> {
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(const SnackBar(content: Text('Signup successful!')));
+
+          await Future.delayed(const Duration(milliseconds: 500));
+
+          if (!mounted) return;
+          Navigator.of(context).pushNamed('/home');
         } else {
           if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(

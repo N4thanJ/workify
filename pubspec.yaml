@@ -23,7 +23,7 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/homepage.svg
+    - assets/images/hero.svg
     - assets/images/form.svg
 
   fonts:
