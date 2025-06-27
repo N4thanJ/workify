@@ -76,7 +76,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).pushNamed('/register');
+                  },
                   child: Text(
                     'Register Account',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),

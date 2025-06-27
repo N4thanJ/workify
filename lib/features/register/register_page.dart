@@ -1,40 +1,43 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key, required this.title});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key, required this.title});
 
   final String title;
 
   @override
-  State<LoginPage> createState() => _MyWidgetState();
+  State<RegisterPage> createState() => _MyWidgetState();
 }
 
-class _MyWidgetState extends State<LoginPage> {
+class _MyWidgetState extends State<RegisterPage> {
   final _secureStorage = FlutterSecureStorage();
   final formKey = GlobalKey<FormState>();
 
   String username = '';
+  String email = '';
   String password = '';
 
   Future<void> submitForm() async {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
 
-      final url = Uri.parse('http://192.168.204.1:8080/users/login');
+      final url = Uri.parse('http://192.168.204.1:8080/users/signup');
 
       try {
         final response = await http.post(
           url,
           headers: {'Content-Type': 'application/json'},
-          body: jsonEncode({'username': username, 'password': password}),
+          body: jsonEncode({
+            'username': username,
+            'email': email,
+            'password': password,
+          }),
         );
-
-        if (!mounted) return;
 
         if (response.statusCode == 200 || response.statusCode == 201) {
           final responseData = jsonDecode(response.body);
@@ -44,11 +47,11 @@ class _MyWidgetState extends State<LoginPage> {
           if (!mounted) return;
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(const SnackBar(content: Text('Login successful!')));
+          ).showSnackBar(const SnackBar(content: Text('Signup successful!')));
         } else {
           if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Login failed: ${response.body}')),
+            SnackBar(content: Text('Signup failed: ${response.body}')),
           );
         }
       } catch (e) {
@@ -114,6 +117,32 @@ class _MyWidgetState extends State<LoginPage> {
                       SizedBox(height: 16),
                       TextFormField(
                         decoration: InputDecoration(
+                          labelText: 'Email',
+                          filled: true,
+                          fillColor: Colors.grey.shade200,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide.none,
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(
+                              color: Colors.blue,
+                              width: 2,
+                            ),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter a valid email';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) => email = value!,
+                      ),
+                      SizedBox(height: 16),
+                      TextFormField(
+                        decoration: InputDecoration(
                           labelText: 'Password',
                           filled: true,
                           fillColor: Colors.grey.shade200,
@@ -157,7 +186,7 @@ class _MyWidgetState extends State<LoginPage> {
                           ),
                           onPressed: submitForm,
                           child: Text(
-                            'Submit',
+                            'Create Account',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -184,10 +213,10 @@ class _MyWidgetState extends State<LoginPage> {
                                 ),
                           ),
                           onPressed: () {
-                            Navigator.of(context).pushNamed('/register');
+                            Navigator.of(context).pushNamed('/login');
                           },
                           child: Text(
-                            "Don't have an account? Register here!",
+                            "Already have an account? Log in here!",
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
